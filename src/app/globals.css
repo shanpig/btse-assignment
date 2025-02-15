@@ -3,15 +3,16 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #131b29;
+  --foreground: #f0f4f8;
+  --quote-table-head-text: #8698aa;
+  --quote-buy-price-text: #00b15d;
+  --quote-sell-price-text: #ff5b5a;
+  --quote-table-row-hover-text: #1e3059;
+  --quote-buy-acc-total-size-bar: rgba(16, 186, 104, 0.12);
+  --quite-sell-acc-total-size-bar: rgba(255, 90, 90, 0.12);
+  --animation-flash-green-bg: rgba(0, 177, 93, 0.5);
+  --animation-flash-red-bg: rgba(255, 91, 90, 0.5);
 }
 
 body {
