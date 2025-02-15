@@ -36,7 +36,9 @@ const parseOrderBookRecords = (records: Record<number, number>, accumulativeDire
 
 export default function Home() {
   const { lastPrice, trend } = useLastPrice();
-  const { orderBook } = useOrderBook({ mock: true });
+  const { orderBook, highlightedQuotes, highlightedQuoteDecreases, highlightedQuoteIncreases } = useOrderBook({
+    mock: false,
+  });
 
   const trendColor =
     trend > 0 ? "text-systemGreen bg-systemGreen-12" : trend < 0 ? "text-systemRed bg-systemRed-12" : "";
@@ -44,27 +46,51 @@ export default function Home() {
   const asks = parseOrderBookRecords(orderBook.asks, "toHighest");
   const bids = parseOrderBookRecords(orderBook.bids, "toLowest");
 
+  const asksTotal = asks.at(0)?.total || 0;
+  const bidsTotal = bids.at(-1)?.total || 0;
+
   return (
-    <div className="py-2 w-72 font-extrabold border-black border-2">
+    <div className="py-2 w-80 font-extrabold border-black border-2">
       <h1 className="text-xl px-2 pb-2">Order Book</h1>
 
       <hr className="border-systemGray opacity-20" />
 
-      <div className="px-2 py-2 grid grid-cols-3 text-systemGray font-normal">
+      <div className="px-2 py-2 grid grid-cols-3 gap-x-3 text-systemGray font-normal">
         <span>Price (USD)</span>
         <span className="text-right">Size</span>
         <span className="text-right">Total</span>
       </div>
 
       {/* ASKS */}
-      <div className="flex flex-col px-2 gap-0.5">
+      <div className="flex flex-col px-2 gap-1">
         {asks.map(({ price, size, total }) => (
-          <div key={price} className="grid grid-cols-3 hover:bg-systemBlue">
+          <div
+            key={price}
+            className={`grid grid-cols-3 gap-x-3 hover:bg-systemBlue transition-colors  ${
+              highlightedQuotes.has(price) ? "bg-systemRed-50 " : ""
+            }`}
+          >
             <span className="text-systemRed">
               {price.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
             </span>
-            <span className="text-right">{size.toLocaleString()}</span>
-            <span className="text-right">{total.toLocaleString()}</span>
+            <span
+              className={`text-right transition-colors duration-50 ${
+                highlightedQuoteIncreases.has(price)
+                  ? "bg-systemGreen-50"
+                  : highlightedQuoteDecreases.has(price)
+                  ? "bg-systemRed-50"
+                  : ""
+              }`}
+            >
+              {size.toLocaleString()}
+            </span>
+            <span className="text-right relative">
+              <span
+                className="absolute right-0 bottom-0 top-0 bg-systemRed-12"
+                style={{ width: `${Math.round((total / asksTotal) * 100)}%` }}
+              ></span>
+              <span>{total.toLocaleString()}</span>
+            </span>
           </div>
         ))}
       </div>
@@ -77,14 +103,35 @@ export default function Home() {
       </div>
 
       {/* BIDS */}
-      <div className="flex flex-col px-2 gap-0.5">
+      <div className="flex flex-col px-2 gap-1">
         {bids.map(({ price, size, total }) => (
-          <div key={price} className="grid grid-cols-3 hover:bg-systemBlue">
+          <div
+            key={price}
+            className={`grid grid-cols-3 gap-x-3 hover:bg-systemBlue transition-colors ${
+              highlightedQuotes.has(price) ? "bg-systemGreen-50" : ""
+            }`}
+          >
             <span className="text-systemGreen">
               {price.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
             </span>
-            <span className="text-right">{size.toLocaleString()}</span>
-            <span className="text-right">{total.toLocaleString()}</span>
+            <span
+              className={`text-right transition-colors duration-50 ${
+                highlightedQuoteIncreases.has(price)
+                  ? "bg-systemGreen-50"
+                  : highlightedQuoteDecreases.has(price)
+                  ? "bg-systemRed-50"
+                  : ""
+              }`}
+            >
+              {size.toLocaleString()}
+            </span>
+            <span className="text-right relative">
+              <span
+                className="absolute right-0 bottom-0 top-0 bg-systemGreen-12"
+                style={{ width: `${Math.round((total / bidsTotal) * 100)}%` }}
+              ></span>
+              <span>{total.toLocaleString()}</span>
+            </span>
           </div>
         ))}
       </div>
