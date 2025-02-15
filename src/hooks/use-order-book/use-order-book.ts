@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { OrderBook, OrderBookSchema, orderBookSchema } from "./use-order-book.type";
+import { OrderBook, OrderBookSchema, orderBookSchema, UseOrderBookProps } from "./use-order-book.type";
+import { ORDER_BOOK_MOCK } from "./use-order-book.constants";
 
 const TOPIC = "update:BTCPFC";
 const socket = new WebSocket("wss://ws.btse.com/ws/oss/futures");
@@ -39,7 +40,7 @@ const parseOrderTuple = (
   }, defaultOrderBook || {});
 };
 
-const useOrderBook = () => {
+const useOrderBook = (props?: UseOrderBookProps) => {
   const [orderBook, setOrderBook] = useState<OrderBook>({ bids: {}, asks: {} });
   const lastSeqNum = useRef<number | null>(null);
 
@@ -112,17 +113,19 @@ const useOrderBook = () => {
   );
 
   useEffect(() => {
-    socket.addEventListener("open", subscribe);
-    socket.addEventListener("message", handleSocketMessage);
+    if (!props?.mock) {
+      socket.addEventListener("open", subscribe);
+      socket.addEventListener("message", handleSocketMessage);
+    }
 
     return () => {
       socket.removeEventListener("open", subscribe);
       socket.removeEventListener("message", handleSocketMessage);
     };
-  }, [handleSocketMessage]);
+  }, [handleSocketMessage, props?.mock]);
 
   return {
-    orderBook,
+    orderBook: props?.mock ? ORDER_BOOK_MOCK : orderBook,
   };
 };
 

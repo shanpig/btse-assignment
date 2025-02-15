@@ -19,3 +19,7 @@ export type OrderBook = {
   bids: Record<number, number>;
   asks: Record<number, number>;
 };
+
+export type UseOrderBookProps = {
+  mock?: boolean;
+};
