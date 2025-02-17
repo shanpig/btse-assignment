@@ -2,6 +2,10 @@
 
 https://serious-lynx-a67.notion.site/Order-Book-38158d30a1f8415f9823f2c7d7e5d5a1
 
+https://github.com/user-attachments/assets/f916d941-868f-4792-ab87-247ee0b73c73
+
+
+
 ## About the project
 
 This is a BTSE assignment project that features an orderbook for BTC-PFC trading history live update. The trading history and last price data are provided via websocket.
