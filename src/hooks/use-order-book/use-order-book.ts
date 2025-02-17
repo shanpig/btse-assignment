@@ -73,7 +73,7 @@ const useOrderBook = (props?: UseOrderBookProps) => {
   }, []);
 
   const resubscribe = useCallback(() => {
-    console.log("resubscribe");
+    console.warn("resubscribe");
     unsubscribe();
     subscribe();
   }, []);
@@ -81,7 +81,6 @@ const useOrderBook = (props?: UseOrderBookProps) => {
   const updateOrderBook = useCallback(
     (data: OrderBookSchema) => {
       lastSeqNum.current = data.data.seqNum;
-      console.log("updateOrderBook");
 
       const [updatedBids, highlightedBids, highlightedBidIncreases, highlightedBidDecreases] = parseOrderTuple(
         data.data.bids,
@@ -111,7 +110,6 @@ const useOrderBook = (props?: UseOrderBookProps) => {
   );
 
   const checkCrossBook = useCallback(() => {
-    console.log("checkCrossBook");
     const bestBid = Math.max(...Object.keys(orderBook.bids).map(Number), 0);
     const bestAsk = Math.min(...Object.keys(orderBook.asks).map(Number), Infinity);
 
